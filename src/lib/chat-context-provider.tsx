@@ -1,11 +1,14 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { createContext, FC, PropsWithChildren, useContext, useState } from "react";
+import { createContext, FC, PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
 import fetchPromptResponse from "./fetch-prompt-response";
+import { Message } from "@prisma/client";
+import { ModelInputRequest } from "./fetch-model-response";
+
 
 interface IChatContext {
-    readonly conversation: Record<"role" | "content", string>[];
+    readonly conversation: Message[];
     submitPrompt: (prompt: string) => void;
 }
 
@@ -30,16 +33,43 @@ export interface ChatContextProviderProps {
 
 const ChatContextProvider: FC<PropsWithChildren<ChatContextProviderProps>> = ({ chatId, children }) => {
     const [conversation, setConversation] = useState<IChatContext["conversation"]>([]);
-    const q = useQuery({
+    const [prompt, setPrompt] = useState<string>("");
+
+    const modelInput = useMemo<ModelInputRequest>(() => ({
+        context: conversation.map(item => ({ role: item.role as "user" | "assistant", content: item.content })),
+        prompt: prompt
+    }), [conversation, prompt]);
+
+    const { data, refetch } = useQuery({
         queryKey: ["chat", chatId],
-        queryFn: () => fetchPromptResponse(chatId, ),
+        queryFn: () => fetchPromptResponse(chatId, { modelInput }),
         enabled: false,
         refetchOnWindowFocus: false,
-    })
+    });
 
-    const submitPrompt: IChatContext["submitPrompt"] = prompt => {
-        setConversation(prev => [...prev, { role: "user", content: prompt }]);
-    };
+    const submitPrompt: IChatContext["submitPrompt"] = prompt => setPrompt(prompt);
+
+    useEffect(() => {
+        if (prompt) {
+            refetch();
+            setPrompt("");
+            const message: Message = {
+                chatId,
+                content: prompt,
+                role: "user",
+                createdAt: new Date(),
+                id: "placeholder",
+            };
+            setConversation(prev => [...prev, message]);
+        }
+    }, [chatId, prompt, refetch]);
+
+    useEffect(() => {
+        if (data && "data" in data) {
+            const message = data.data.message;
+            setConversation(prev => [...prev, message]);
+        }
+    }, [data]);
 
     return (
         <ChatContext.Provider value={{ conversation, submitPrompt }}>
