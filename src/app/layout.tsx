@@ -17,7 +17,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
             <ReactQueryClientProvider>
                 <ThemeProvider>
                     <Stack component="body" height="100vh">
-                        <StatusBar />
+                        <StatusBar position="fixed" />
                         {children}
                     </Stack>
                 </ThemeProvider>

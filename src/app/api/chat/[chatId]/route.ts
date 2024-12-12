@@ -1,9 +1,9 @@
-import { NextResponse } from "next/server";
-import { ChatRequestHandler } from "../chat";
-import withRequestBodyValidator from "./with-request-body";
 import fetchModelResponse from "@/lib/fetch-model-response";
 import { Message } from "@prisma/client";
+import { NextResponse } from "next/server";
 import { ZodError, ZodIssue } from "zod";
+import { ChatRequestHandler } from "../chat";
+import withRequestBodyValidator from "./with-request-body";
 
 
 export interface ModelResponse {
@@ -22,7 +22,7 @@ export const POST: ChatRequestHandler<ModelRequestResponse> = async (request, { 
         // TODO: Replace the following semi-hardcoded block with MongoDB document insertion logic.
         const message: Message = {
             id: "placeholder",
-            chatId: params.chatId,
+            chatId: (await params).chatId,
             role: modelResponse.role,
             content: modelResponse.content,
             createdAt: new Date(),

@@ -1,13 +1,13 @@
 "use client";
 
+import { useChatContext } from "@/lib/chat-context-provider";
+import SendIcon from '@mui/icons-material/Send';
+import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import { alpha, styled } from "@mui/material/styles";
 import TextField, { TextFieldProps } from "@mui/material/TextField";
-import SendIcon from '@mui/icons-material/Send';
 import { FormEventHandler, useState } from "react";
 import { isAscii } from "validator";
-import Box from "@mui/material/Box";
-import { useChatContext } from "@/lib/chat-context-provider";
 
 
 export const StyledChatTextInput = styled((props: TextFieldProps) => (

@@ -1,7 +1,7 @@
 "use client";
 
 import CssBaseline from "@mui/material/CssBaseline";
-import { alpha, createTheme, PaletteMode, ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import { alpha, createTheme, ThemeProvider as MuiThemeProvider, PaletteMode } from "@mui/material/styles";
 import localFont from "next/font/local";
 import { createContext, FC, PropsWithChildren, useContext, useMemo, useState } from "react";
 

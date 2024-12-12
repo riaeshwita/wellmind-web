@@ -3,7 +3,8 @@ import ChatBubblesRenderer from "@/ui/chat-bubbles-renderer";
 import TextBoxChatInput from "@/ui/textbox-chat-input";
 import Box from "@mui/material/Box";
 import Container from "@mui/material/Container";
-import Grid2 from "@mui/material/Grid2";
+import Stack from "@mui/material/Stack";
+import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 
 
@@ -21,21 +22,20 @@ export default async function ChatPage({ params }: ChatPageProps) {
 
     return (
         <ChatContextProvider chatId={chatId}>
-            <Box component="main" sx={{ height: "100vh" }}>
-                <Container maxWidth="md" sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-                    <Grid2 container direction="column" flex={1} spacing={2}>
-                        <Grid2 size="grow">
-                            <ChatBubblesRenderer sx={{ height: "100%", overflowY: "auto" }} />
-                        </Grid2>
-                        <Grid2 sx={{ py: 2 }}>
-                            <TextBoxChatInput />
-                            <Typography variant="caption" component="p" textAlign="center" color="text.secondary" sx={{ mt: 1 }}>
-                                Crafted by <strong>Ando the Great</strong>
-                            </Typography>
-                        </Grid2>
-                    </Grid2>
+            <Toolbar />
+            <Stack component="main" sx={{ position: "relative",  flex: 1 }}>
+                <Container maxWidth="md" sx={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+                    <ChatBubblesRenderer />
                 </Container>
-            </Box>
+                <Box sx={{ position: "sticky", bottom: 0, width: "100%", backgroundColor: "background.paper", py: 2 }}>
+                    <Container maxWidth="md">
+                        <TextBoxChatInput autoFocus />
+                        <Typography variant="caption" component="p" textAlign="center" color="text.secondary" sx={{ mt: 1 }}>
+                            Crafted by <strong>Ando the Great</strong>
+                        </Typography>
+                    </Container>
+                </Box>
+            </Stack>
         </ChatContextProvider>
     )
 }

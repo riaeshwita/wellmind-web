@@ -1,10 +1,11 @@
+import ClearAllIcon from '@mui/icons-material/ClearAll';
 import ButtonBase from "@mui/material/ButtonBase";
 import Paper from "@mui/material/Paper";
-import ClearAllIcon from '@mui/icons-material/ClearAll';
-import { FC } from "react";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import Link from "next/link";
+import { FC } from "react";
+
 
 const StartTemporaryChatAction: FC = () => {
     return (

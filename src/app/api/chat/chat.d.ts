@@ -1,9 +1,9 @@
 import { Context, RequestHandler } from "../api";
 
 interface ChatContext extends Context {
-    params: {
+    params: Promise<{
         chatId: string;
-    }
+    }>
 }
 
 export type ChatRequestHandler<B = unknown> = RequestHandler<ChatContext, B>;
