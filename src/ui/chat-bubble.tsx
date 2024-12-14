@@ -3,6 +3,7 @@ import MarkdownRenderer from "@/lib/markdown-renderer";
 import SmartToyIcon from '@mui/icons-material/SmartToy';
 import Box from "@mui/material/Box";
 import Paper, { PaperProps } from "@mui/material/Paper";
+import Skeleton from "@mui/material/Skeleton";
 import Stack, { StackProps } from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
@@ -55,3 +56,23 @@ const ChatBubble: FC<ChatBubbleProps> = ({ message, paperProps, ...props }) => {
 }
 
 export default ChatBubble;
+
+export const ChatBubbleSkeleton: FC<Omit<ChatBubbleProps, "message">> = ({ paperProps, ...props }) => (
+    <Stack direction="column-reverse" alignItems="flex-start" spacing={1} sx={{ maxWidth: "85%" }} {...props}>
+        <BubblePaper elevation={0} {...paperProps} role="assistant">
+            <Stack spacing={1}>
+                <Skeleton variant="text" width="80%" />
+                <Skeleton variant="text" width="92%" />
+                <Skeleton variant="text" width="67%" />
+                <Skeleton variant="text" width="38%" />
+            </Stack>
+        </BubblePaper>
+        <Typography variant="caption" color="text.secondary">
+            <Box component="strong" color="success.light">
+                <SmartToyIcon sx={{ fontSize: "inherit", verticalAlign: "middle" }} />
+                &nbsp;&nbsp;WellMind AI&nbsp;&nbsp;•&nbsp;&nbsp;
+            </Box>
+            <Skeleton variant="text" width="4em" sx={{ display: "inline-block" }} />
+        </Typography>
+    </Stack>
+);

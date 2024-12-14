@@ -3,7 +3,7 @@
 import { ModelRequestResponse } from "@/app/api/chat/[chatId]/route";
 import { Message } from "@prisma/client";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { createContext, FC, PropsWithChildren, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, FC, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { ModelInputRequest } from "./fetch-model-response";
 import fetchPromptResponse from "./fetch-prompt-response";
 
@@ -11,12 +11,14 @@ import fetchPromptResponse from "./fetch-prompt-response";
 interface IChatContext {
     readonly conversation: Message[];
     readonly query: UseQueryResult<ModelRequestResponse, Error>;
-    submitPrompt: (prompt: string) => void;
+    readonly onConversationUpdate: (callback: (message: Message) => void) => void;
+    readonly submitPrompt: (prompt: string) => void;
 }
 
 const initialContext: IChatContext = {
     conversation: [],
     query: {} as UseQueryResult<ModelRequestResponse, Error>,
+    onConversationUpdate: () => { },
     submitPrompt: () => { },
 };
 
@@ -37,6 +39,7 @@ export interface ChatContextProviderProps {
 const ChatContextProvider: FC<PropsWithChildren<ChatContextProviderProps>> = ({ chatId, children }) => {
     const [conversation, setConversation] = useState<IChatContext["conversation"]>([]);
     const [prompt, setPrompt] = useState<string>("");
+    const onConversationUpdate = useCallback<IChatContext["onConversationUpdate"]>(callback => callback(conversation[conversation.length - 1]), [conversation]);
 
     const modelInput = useMemo<ModelInputRequest>(() => ({
         context: conversation.map(item => ({ role: item.role as "user" | "assistant", content: item.content })),
@@ -74,8 +77,14 @@ const ChatContextProvider: FC<PropsWithChildren<ChatContextProviderProps>> = ({ 
         }
     }, [query.data]);
 
+    useEffect(() => {
+        if (query.data && "error" in query.data) {
+            console.error(query.data.error);
+        }
+    }, [query.data]);
+
     return (
-        <ChatContext.Provider value={{ conversation, query, submitPrompt }}>
+        <ChatContext.Provider value={{ conversation, query, onConversationUpdate, submitPrompt }}>
             {children}
         </ChatContext.Provider>
     );
